@@ -1,10 +1,12 @@
 export const addMessageToStore = (state, payload) => {
-  const { message, sender } = payload;
+  const { message, sender, recipientId } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
+  // use recipiantId so new conversations will only be displayed to recipiant
   if (sender !== null) {
     const newConvo = {
       id: message.conversationId,
       otherUser: sender,
+      currentUserId: recipientId,
       messages: [message],
     };
     newConvo.latestMessageText = message.text;
@@ -49,7 +51,7 @@ export const removeOfflineUserFromStore = (state, id) => {
   });
 };
 
-export const addSearchedUsersToStore = (state, users) => {
+export const addSearchedUsersToStore = (state, data) => {
   const currentUsers = {};
 
   // make table of current users so we can lookup faster
@@ -58,10 +60,10 @@ export const addSearchedUsersToStore = (state, users) => {
   });
 
   const newState = [...state];
-  users.forEach((user) => {
+  data.users.forEach((user) => {
     // only create a fake convo if we don't already have a convo with this user
     if (!currentUsers[user.id]) {
-      let fakeConvo = { otherUser: user, messages: [] };
+      let fakeConvo = { otherUser: user, currentUserId: data.userId, messages: [] };
       newState.push(fakeConvo);
     }
   });

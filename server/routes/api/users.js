@@ -30,7 +30,7 @@ router.get("/:username", async (req, res, next) => {
       }
       users[i] = userJSON;
     }
-    res.json(users);
+    res.json({ users, userId: req.user.id });
   } catch (error) {
     next(error);
   }
