@@ -62,6 +62,7 @@ router.get("/", async (req, res, next) => {
       } else if (convoJSON.user2) {
         convoJSON.otherUser = convoJSON.user2;
         delete convoJSON.user2;
+
       }
 
       // set property for online status of the other user
@@ -73,6 +74,11 @@ router.get("/", async (req, res, next) => {
 
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length - 1].text;
+
+      // set isActive and  unread count for determining if there are unread messages
+      convoJSON.isActive = false;
+      convoJSON.unread = 0;
+
       conversations[i] = convoJSON;
     }
 

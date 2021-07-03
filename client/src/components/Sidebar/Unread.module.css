@@ -1,0 +1,10 @@
+.numberBubble {
+  padding: .25rem;
+  border-radius: 50%;
+  background-color: #3a8dff;
+}
+
+.count {
+  font-size: inherit;
+  color: #fff;
+}

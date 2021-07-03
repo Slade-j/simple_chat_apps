@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import Unread from "./Unread";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +39,7 @@ const ChatContent = (props) => {
   const classes = useStyles();
 
   const { conversation } = props;
-  const { latestMessageText, otherUser } = conversation;
+  const { latestMessageText, otherUser, unread } = conversation;
 
   return (
     <Box className={classes.root}>
@@ -50,6 +51,8 @@ const ChatContent = (props) => {
           {latestMessageText}
         </Typography>
       </Box>
+      {unread > 0 &&
+        <Unread count={unread} />}
     </Box>
   );
 };

@@ -8,21 +8,25 @@ export const addMessageToStore = (state, payload) => {
       otherUser: sender,
       currentUserId: recipientId,
       messages: [message],
+      unread: 1,
+      isActive: false
     };
     newConvo.latestMessageText = message.text;
     return [newConvo, ...state];
   }
 
   return state.map((convo) => {
+    const convoCopy = { ...convo };
     if (convo.id === message.conversationId) {
-      const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
-
-      return convoCopy;
-    } else {
-      return convo;
     }
+
+    if (!convoCopy.isActive) {
+      convoCopy.unread++
+    }
+
+    return convoCopy;
   });
 };
 
@@ -85,3 +89,17 @@ export const addNewConvoToStore = (state, recipientId, message) => {
   });
   return newState;
 };
+
+export const seatConvoIsActive = (state, conversationId) => {
+  return state.map(convo => {
+    const setConvo = { ...convo }
+    if (convo.id === conversationId) {
+      setConvo.isActive = true;
+      setConvo.unread = 0;
+      return setConvo
+    } else {
+      setConvo.isActive = false;
+      return setConvo;
+    }
+  })
+}
