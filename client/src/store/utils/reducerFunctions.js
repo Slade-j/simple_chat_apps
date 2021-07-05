@@ -1,5 +1,7 @@
 export const addMessageToStore = (state, payload) => {
   const { message, sender, recipientId } = payload;
+  const unreadCounts = JSON.parse(localStorage.getItem("unreadCounts"));
+
   // if sender isn't null, that means the message needs to be put in a brand new convo
   // use recipiantId so new conversations will only be displayed to recipiant
   if (sender !== null) {
@@ -12,20 +14,29 @@ export const addMessageToStore = (state, payload) => {
       isActive: false
     };
     newConvo.latestMessageText = message.text;
+
+    // set localStorage count for tracking unread messages
+    unreadCounts[newConvo.id] = 1;
+    localStorage.setItem("unreadCounts", JSON.stringify(unreadCounts));
+
     return [newConvo, ...state];
   }
 
-  return state.map((convo) => {
+  const newState = state.map((convo) => {
     const convoCopy = { ...convo };
     if (convo.id === message.conversationId) {
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
       !convoCopy.isActive && convoCopy.unread++;
+      // set localStorage count for tracking unread messages
+      !convoCopy.isActive && unreadCounts[convoCopy.id]++
     }
-
 
     return convoCopy;
   });
+
+  localStorage.setItem("unreadCounts", JSON.stringify(unreadCounts));
+  return newState;
 };
 
 export const addOnlineUserToStore = (state, id) => {

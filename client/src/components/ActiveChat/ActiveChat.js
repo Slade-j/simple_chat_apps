@@ -25,11 +25,13 @@ const ActiveChat = (props) => {
   const { user } = props;
   const conversation = props.conversation || {};
 
-  // set unread message count to zero in locas storage
+  // set unread message count to zero in local storage
   useEffect(() => {
     if(!conversation.id) return;
     const unreadCounts = JSON.parse(localStorage.getItem("unreadCounts"));
-    unreadCounts[conversation.id] = 1;
+
+    if (unreadCounts) unreadCounts[conversation.id] = 0;
+
     localStorage.setItem("unreadCounts", JSON.stringify(unreadCounts));
   }, [conversation]);
 

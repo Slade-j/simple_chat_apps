@@ -54,7 +54,10 @@ const ChatContent = (props) => {
   const classes = useStyles();
 
   const { conversation } = props;
-  const { latestMessageText, otherUser, unread } = conversation;
+  const { latestMessageText, otherUser } = conversation;
+  const unreadCounts = JSON.parse(localStorage.getItem("unreadCounts"));
+  // use values in state if local storage is empty
+  const unread = unreadCounts ? unreadCounts[conversation.id] : conversation.unread;
 
   return (
     <Box className={classes.root}>

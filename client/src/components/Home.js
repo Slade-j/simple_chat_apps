@@ -33,11 +33,11 @@ class Home extends Component {
   componentDidMount() {
     // check localstorage so counts will persist upon refresh
     const storage = localStorage.getItem("unreadCounts");
-    const unreadCounts = storage ? storage : null;
+    const unreadCounts = storage ? storage : {};
 
     this.props.fetchConversations()
       .then(conversations => {
-        if (!unreadCounts) {
+        if (!unreadCounts === {}) {
           conversations.forEach(convo => {
           unreadCounts[convo.id] = convo.unread;
           });
