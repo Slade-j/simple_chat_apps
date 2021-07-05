@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
@@ -24,6 +24,14 @@ const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
   const conversation = props.conversation || {};
+
+  // set unread message count to zero in locas storage
+  useEffect(() => {
+    if(!conversation.id) return;
+    const unreadCounts = JSON.parse(localStorage.getItem("unreadCounts"));
+    unreadCounts[conversation.id] = 1;
+    localStorage.setItem("unreadCounts", JSON.stringify(unreadCounts));
+  }, [conversation]);
 
   return (
     <Box className={classes.root}>

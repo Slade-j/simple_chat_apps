@@ -31,7 +31,19 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchConversations();
+    // check localstorage so counts will persist upon refresh
+    const storage = localStorage.getItem("unreadCounts");
+    const unreadCounts = storage ? storage : null;
+
+    this.props.fetchConversations()
+      .then(conversations => {
+        if (!unreadCounts) {
+          conversations.forEach(convo => {
+          unreadCounts[convo.id] = convo.unread;
+          });
+          localStorage.setItem("unreadCounts", JSON.stringify(unreadCounts));
+        }
+      });
   }
 
   handleLogout = async () => {
@@ -75,7 +87,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(clearOnLogout());
     },
     fetchConversations: () => {
-      dispatch(fetchConversations());
+      return dispatch(fetchConversations());
     },
   };
 };

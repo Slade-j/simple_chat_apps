@@ -19,7 +19,7 @@ router.get("/", async (req, res, next) => {
           user2Id: userId,
         },
       },
-      attributes: ["id"],
+      attributes: ["id", "unread"],
       order: [["createdAt", "DESC"], [Message, "createdAt", "ASC"]],
       include: [
         { model: Message },
@@ -75,9 +75,8 @@ router.get("/", async (req, res, next) => {
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length - 1].text;
 
-      // set isActive and  unread count for determining if there are unread messages
+      // set isActive determining if there are unread messages
       convoJSON.isActive = false;
-      convoJSON.unread = 0;
 
       conversations[i] = convoJSON;
     }
