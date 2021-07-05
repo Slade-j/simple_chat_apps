@@ -88,16 +88,16 @@ export const addNewConvoToStore = (state, recipientId, message) => {
   return newState;
 };
 
-export const seatConvoIsActive = (state, conversationId) => {
+export const setConvoIsActive = (state, conversationId) => {
   return state.map(convo => {
-    const setConvo = { ...convo }
+    const convoCopy = { ...convo }
     if (convo.id === conversationId) {
-      setConvo.isActive = true;
-      setConvo.unread = 0;
-      return setConvo
+      convoCopy.isActive = true;
+      convoCopy.unread = 0;
+      return convoCopy
     } else {
-      setConvo.isActive = false;
-      return setConvo;
+      convoCopy.isActive = false;
+      return convoCopy;
     }
   })
 }

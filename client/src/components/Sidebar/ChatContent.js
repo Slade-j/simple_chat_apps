@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Unread from "./Unread";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,18 +25,29 @@ const useStyles = makeStyles((theme) => ({
   },
   notification: {
     height: 20,
-    width: 20,
+    minWidth: 20,
     backgroundColor: "#3F92FF",
     marginRight: 10,
-    color: "white",
-    fontSize: 10,
-    letterSpacing: -0.5,
-    fontWeight: "bold",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
+    marginTop: 10,
   },
+  singleDigit: {
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
+  multiDigits: {
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  count: {
+    fontSize: 9,
+    color: "white",
+    fontWeight: "bold",
+    letterSpacing: -0.5,
+  }
 }));
 
 const ChatContent = (props) => {
@@ -57,7 +67,9 @@ const ChatContent = (props) => {
         </Typography>
       </Box>
       {unread > 0 &&
-        <Unread count={unread} />}
+        <box className={`${classes.notification} ${unread < 10 ? classes.singleDigit : classes.multiDigits}`}>
+          <Typography className={classes.count}>{unread}</Typography>
+        </box>}
     </Box>
   );
 };

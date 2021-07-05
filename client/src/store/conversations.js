@@ -4,7 +4,7 @@ import {
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
   addMessageToStore,
-  seatConvoIsActive,
+  setConvoIsActive,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -99,7 +99,7 @@ const reducer = (state = [], action) => {
         action.payload.newMessage
       );
     case SET_ISACTIVE:
-      return seatConvoIsActive(state, action.payload)
+      return setConvoIsActive(state, action.payload)
     default:
       return state;
   }
