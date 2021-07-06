@@ -22,6 +22,7 @@ const useStyles = makeStyles(() => ({
 const Sidebar = (props) => {
   const classes = useStyles();
   const conversations = props.conversations || [];
+  const userId = props.user.id;
   const { handleChange, searchTerm } = props;
 
   return (
@@ -30,7 +31,7 @@ const Sidebar = (props) => {
       <Typography className={classes.title}>Chats</Typography>
       <Search handleChange={handleChange} />
       {conversations
-        .filter((conversation) => conversation.otherUser.username.includes(searchTerm))
+        .filter((conversation) => conversation.otherUser.username.includes(searchTerm) && conversation.currentUserId === userId)
         .map((conversation) => {
           return <Chat conversation={conversation} key={conversation.otherUser.username} />;
         })}
@@ -40,7 +41,8 @@ const Sidebar = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    conversations: state.conversations
+    conversations: state.conversations,
+    user: state.user,
   };
 };
 
