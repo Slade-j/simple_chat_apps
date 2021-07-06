@@ -3,7 +3,6 @@ export const addMessageToStore = (state, payload) => {
   // if sender isn't null, that means the message needs to be put in a brand new convo
   // use recipiantId so new conversations will only be displayed to recipiant
   if (sender !== null) {
-    console.log("hit here!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     const newConvo = {
       id: message.conversationId,
       otherUser: sender,
@@ -14,17 +13,18 @@ export const addMessageToStore = (state, payload) => {
     return [newConvo, ...state];
   }
 
-  return state.map((convo) => {
+  const newState = [];
+  state.forEach((convo) => {
     if (convo.id === message.conversationId) {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
-
-      return convoCopy;
+      newState.unshift(convoCopy);
     } else {
-      return convo;
+      newState.push(convo);
     }
   });
+  return newState;
 };
 
 export const addOnlineUserToStore = (state, id) => {
