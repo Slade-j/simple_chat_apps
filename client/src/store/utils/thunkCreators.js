@@ -56,10 +56,14 @@ export const login = (credentials) => async (dispatch) => {
   }
 };
 
-export const logout = (id) => async (dispatch) => {
+export const logout = (logoutParameters) => async (dispatch) => {
+  const { id } = logoutParameters;
+
   try {
-    await axios.delete("/auth/logout");
-    await localStorage.removeItem("messenger-token");
+    // logout posts unreadCounts so a single call to backend can handle updating unread columns in conversations
+    await axios.post("/auth/logout", logoutParameters);
+    localStorage.removeItem("unreadCounts");
+    localStorage.removeItem("messenger-token");
     dispatch(gotUser({}));
     socket.emit("logout", id);
   } catch (error) {

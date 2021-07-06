@@ -70,9 +70,9 @@ const ChatContent = (props) => {
         </Typography>
       </Box>
       {unread > 0 &&
-        <box className={`${classes.notification} ${unread < 10 ? classes.singleDigit : classes.multiDigits}`}>
+        <Box className={`${classes.notification} ${unread < 10 ? classes.singleDigit : classes.multiDigits}`}>
           <Typography className={classes.count}>{unread}</Typography>
-        </box>}
+        </Box>}
     </Box>
   );
 };

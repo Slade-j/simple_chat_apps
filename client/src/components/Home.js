@@ -37,7 +37,7 @@ class Home extends Component {
 
     this.props.fetchConversations()
       .then(conversations => {
-        if (!unreadCounts === {}) {
+        if (!storage) {
           conversations.forEach(convo => {
           unreadCounts[convo.id] = convo.unread;
           });
@@ -47,7 +47,9 @@ class Home extends Component {
   }
 
   handleLogout = async () => {
-    await this.props.logout(this.props.user.id);
+    const unreadCounts = JSON.parse(localStorage.getItem("unreadCounts"));
+    const logoutParameters = { id: this.props.user.id, unreadCounts }
+    await this.props.logout(logoutParameters);
   };
 
   render() {
@@ -82,8 +84,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    logout: (id) => {
-      dispatch(logout(id));
+    logout: (params) => {
+      dispatch(logout(params));
       dispatch(clearOnLogout());
     },
     fetchConversations: () => {
