@@ -1,4 +1,3 @@
-import socket from "../../socket";
 
 export const addMessageToStore = (state, payload) => {
   const { message, sender, recipientId } = payload;
