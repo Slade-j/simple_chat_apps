@@ -33,7 +33,7 @@ class Home extends Component {
   componentDidMount() {
     // check localstorage so counts will persist upon refresh
     const storage = localStorage.getItem("unreadCounts");
-    const unreadCounts = storage ? storage : {};
+    const unreadCounts = storage ?? {};
 
     this.props.fetchConversations()
       .then(conversations => {
