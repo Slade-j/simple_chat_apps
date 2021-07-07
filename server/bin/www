@@ -54,6 +54,7 @@ io.on("connection", (socket) => {
       userIndex = onlineUsers.indexOf(id);
       onlineUsers.splice(userIndex, 1);
       socket.broadcast.emit("remove-offline-user", id);
+      socket.leave(id)
     }
   });
 });
