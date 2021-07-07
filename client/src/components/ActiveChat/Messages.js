@@ -17,8 +17,6 @@ const Messages = (props) => {
         return;
       }
     }
-    // const latestMessage = messages[messages.length - 1]
-    // latestMessage.senderId === userId && setRecentlyRead(latestMessage.id)
   }, [messages.length])
 
   return (
