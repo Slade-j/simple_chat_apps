@@ -61,9 +61,8 @@ io.use(function(socket, next){
   socket.on("go-online", (id) => {
     // each user joins their own room
     socket.join(id);
-    if (!onlineUsers.includes(id)) {
-      onlineUsers.push(id);
-    }
+
+    onlineUsers.addOnlineUser(id);
     // send the user who just went online to everyone else who is already online
     socket.broadcast.emit("add-online-user", id);
   });
@@ -78,12 +77,9 @@ io.use(function(socket, next){
   });
 
   socket.on("logout", (id) => {
-    if (onlineUsers.includes(id)) {
-      userIndex = onlineUsers.indexOf(id);
-      onlineUsers.splice(userIndex, 1);
-      socket.broadcast.emit("remove-offline-user", id);
-      socket.leave();
-    }
+    onlineUsers.removeOnlineUser(id);
+    socket.broadcast.emit("remove-offline-user", id);
+    socket.leave();
   });
 });
 
