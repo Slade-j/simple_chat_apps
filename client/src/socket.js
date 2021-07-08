@@ -6,23 +6,26 @@ import {
   addOnlineUser,
 } from "./store/conversations";
 
-const token = localStorage.getItem("messenger-token");
-console.log(token, "token here!!!!!!")
-const socket = io.connect(window.location.origin, { query: { token } });
+const getSocket = (token) => io.connect(window.location.origin, { query: { token } });
 
-socket.on("connect", () => {
-  console.log("connected to server");
+export const getSocketEvents = (socket) => {
 
-  socket.on("add-online-user", (id) => {
-    store.dispatch(addOnlineUser(id));
-  });
+  return (
+    socket.on("connect", () => {
+      console.log("connected to server");
 
-  socket.on("remove-offline-user", (id) => {
-    store.dispatch(removeOfflineUser(id));
-  });
-  socket.on("new-message", (data) => {
-    store.dispatch(setNewMessage(data.message, data.recipientId, data.sender));
-  });
-});
+      socket.on("add-online-user", (id) => {
+        store.dispatch(addOnlineUser(id));
+      });
 
-export default socket;
+      socket.on("remove-offline-user", (id) => {
+        store.dispatch(removeOfflineUser(id));
+      });
+      socket.on("new-message", (data) => {
+        store.dispatch(setNewMessage(data.message, data.recipientId, data.sender));
+      });
+    })
+  );
+}
+
+export default getSocket;
