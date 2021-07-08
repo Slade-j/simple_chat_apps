@@ -41,7 +41,10 @@ app.use(function (req, res, next) {
   }
 });
 
+// create socket and socket middleware
 const io = require("socket.io")(server);
+
+// socket middleware to authenticate connection using jwt
 io.use(function(socket, next){
   if (socket.handshake.query && socket.handshake.query.token){
     jwt.verify(socket.handshake.query.token,  process.env.SESSION_SECRET, (err, decoded) => {
