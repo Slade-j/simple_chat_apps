@@ -30,9 +30,7 @@ router.post("/", async (req, res, next) => {
         user1Id: senderId,
         user2Id: recipientId,
       });
-      if (onlineUsers.includes(sender.id)) {
-        sender.online = true;
-      }
+      sender.online = onlineUsers.isOnline(senderId)
     }
 
     // make sure sender is part of conversation before creating message

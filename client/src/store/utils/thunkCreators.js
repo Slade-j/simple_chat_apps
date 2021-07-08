@@ -1,5 +1,5 @@
 import axios from "axios";
-import socket from "../../socket";
+import getSocket, { getSocketEvents } from "../../socket";
 import {
   gotConversations,
   addConversation,
@@ -15,6 +15,9 @@ axios.interceptors.request.use(async function (config) {
   return config;
 });
 
+// Initialize socket to be set by login, regester, or fetchUser on refresh.
+export let socket;
+
 // USER THUNK CREATORS
 
 export const fetchUser = () => async (dispatch) => {
@@ -23,6 +26,9 @@ export const fetchUser = () => async (dispatch) => {
     const { data } = await axios.get("/auth/user");
     dispatch(gotUser(data));
     if (data.id) {
+      const token = localStorage.getItem("messenger-token");
+      socket = getSocket(token);
+      getSocketEvents(socket);
       socket.emit("go-online", data.id);
     }
   } catch (error) {
@@ -37,6 +43,8 @@ export const register = (credentials) => async (dispatch) => {
     const { data } = await axios.post("/auth/register", credentials);
     await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
+    socket = getSocket(data.token);
+    getSocketEvents(socket);
     socket.emit("go-online", data.id);
   } catch (error) {
     console.error(error);
@@ -49,6 +57,8 @@ export const login = (credentials) => async (dispatch) => {
     const { data } = await axios.post("/auth/login", credentials);
     await localStorage.setItem("messenger-token", data.token);
     dispatch(gotUser(data));
+    socket = getSocket(data.token)
+    getSocketEvents(socket);
     socket.emit("go-online", data.id);
   } catch (error) {
     console.error(error);
@@ -66,6 +76,7 @@ export const logout = (logoutParameters) => async (dispatch) => {
     localStorage.removeItem("messenger-token");
     dispatch(gotUser({}));
     socket.emit("logout", id);
+    socket.disconnect();
   } catch (error) {
     console.error(error);
   }
