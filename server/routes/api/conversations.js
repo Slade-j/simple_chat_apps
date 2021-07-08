@@ -19,7 +19,7 @@ router.get("/", async (req, res, next) => {
           user2Id: userId,
         },
       },
-      attributes: ["id", "unread"],
+      attributes: ["id", "unread1", "unread2", "user1Id", "user2Id"],
       order: [["createdAt", "DESC"], [Message, "createdAt", "ASC"]],
       include: [
         { model: Message },
@@ -55,6 +55,16 @@ router.get("/", async (req, res, next) => {
       // set currentUserId to filter on frontend
       convoJSON.currentUserId = userId;
 
+      // set unread count
+      if (convoJSON.user1Id === userId) {
+        convoJSON.unread = convoJSON.unread1;
+      } else if (convo.user2Id === userId) {
+        convoJSON.unread = convoJSON.unread2
+      }
+
+      delete convoJSON.user1Id;
+      delete convoJSON.user2Id;
+
       // set a property "otherUser" so that frontend will have easier access
       if (convoJSON.user1) {
         convoJSON.otherUser = convoJSON.user1;
@@ -62,7 +72,6 @@ router.get("/", async (req, res, next) => {
       } else if (convoJSON.user2) {
         convoJSON.otherUser = convoJSON.user2;
         delete convoJSON.user2;
-
       }
 
       // set property for online status of the other user
@@ -75,7 +84,7 @@ router.get("/", async (req, res, next) => {
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length - 1].text;
 
-      // set isActive determining if there are unread messages
+      // set isActive for determining if there are unread messages
       convoJSON.isActive = false;
 
       conversations[i] = convoJSON;

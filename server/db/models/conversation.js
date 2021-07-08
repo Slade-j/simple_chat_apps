@@ -11,7 +11,12 @@ const Conversation = db.define("conversation", {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
-  unread: {
+  unread1: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    defaultValue: 0
+  },
+  unread2: {
     type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0
