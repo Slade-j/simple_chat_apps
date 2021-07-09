@@ -4,20 +4,23 @@ import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import moment from "moment";
 
 const Messages = (props) => {
-  const { messages, otherUser, userId } = props;
+  const { messages, otherUser, userId, readStatus } = props;
   const [ recentlyRead, setRecentlyRead ] = useState('')
 
   useEffect(() => {
     if(!messages.length) return;
 
-    for (let i = messages.length - 1; i >= 0 ; i--) {
-      const latestMessage = messages[i]
-      if (latestMessage.senderId === userId) {
-        setRecentlyRead(latestMessage.id);
-        return;
+    // check to see if ohter user has conversation active
+    if (readStatus) {
+      for (let i = messages.length - 1; i >= 0 ; i--) {
+        const latestMessage = messages[i]
+        if (latestMessage.senderId === userId) {
+          setRecentlyRead(latestMessage.id);
+          return;
+        }
       }
     }
-  }, [messages.length])
+  }, [messages.length, readStatus])
 
   return (
     <Box>

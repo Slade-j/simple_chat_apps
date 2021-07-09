@@ -24,6 +24,7 @@ const useStyles = makeStyles(() => ({
 const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
+  const conversationsRead = props.conversationsRead;
   const conversation = props.conversation || {};
   const dispatch = useDispatch();
 
@@ -54,6 +55,7 @@ const ActiveChat = (props) => {
           />
           <Box className={classes.chatContainer}>
             <Messages
+              readStatus={conversationsRead[conversation.id]}
               messages={conversation.messages}
               otherUser={conversation.otherUser}
               userId={user.id}
@@ -72,6 +74,7 @@ const ActiveChat = (props) => {
 const mapStateToProps = (state) => {
   const lastActiveConvo = JSON.parse(localStorage.getItem("active-convo"))
   return {
+    conversationsRead: state.conversationsRead,
     user: state.user,
     conversation:
       state.conversations &&

@@ -5,6 +5,7 @@ import {
   removeOfflineUser,
   addOnlineUser,
 } from "./store/conversations";
+import { openConversation, closeConversation } from "./store/conversationsRead";
 
 const socket = io(window.location.origin);
 
@@ -20,11 +21,11 @@ socket.on("connect", () => {
   });
 
   socket.on("opened-conversation", (conversationId) => {
-    console.log(conversationId, "opened conversation here!!!!!!!!!!!!!!")
+    store.dispatch(openConversation(conversationId));
   });
 
   socket.on("closed-conversaton", (conversationId) => {
-    console.log(conversationId, "closed conversation here>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    store.dispatch(closeConversation(conversationId));
   })
 
   socket.on("new-message", (data) => {
