@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
 import { Input, Header, Messages } from "./index";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
+import { setPreviousConvo } from "../../store/previousConversation";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -24,16 +25,24 @@ const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
   const conversation = props.conversation || {};
+  const dispatch = useDispatch();
 
   // set unread message count to zero in local storage
   useEffect(() => {
-    if(!conversation.id) return;
+    if (!conversation.id) return;
     const unreadCounts = JSON.parse(localStorage.getItem("unreadCounts"));
 
     if (unreadCounts) unreadCounts[conversation.id] = 0;
 
     localStorage.setItem("unreadCounts", JSON.stringify(unreadCounts));
   }, [conversation]);
+
+  // set previously active conversation to track read messages
+  useEffect(() => {
+    if (!conversation.id) return;
+
+    dispatch(setPreviousConvo(conversation));
+  }, [conversation, dispatch])
 
   return (
     <Box className={classes.root}>

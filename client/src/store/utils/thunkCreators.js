@@ -114,6 +114,10 @@ export const postMessage = (body) => async (dispatch) => {
   }
 };
 
+export const recentlyRead = (body) => async (dispatch) => {
+  socket.emit("recently-read", body);
+}
+
 export const searchUsers = (searchTerm) => async (dispatch) => {
   try {
     const { data } = await axios.get(`/api/users/${searchTerm}`);

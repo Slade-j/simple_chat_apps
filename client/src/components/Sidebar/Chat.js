@@ -5,6 +5,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
 import { setIsActive } from "../../store/conversations";
 import { connect } from "react-redux";
+import { recentlyRead } from "../../store/utils/thunkCreators";
 
 const styles = {
   root: {
@@ -24,12 +25,18 @@ class Chat extends Component {
   handleClick = async (conversation) => {
     await this.props.setActiveChat(conversation.otherUser.username);
     await this.props.setIsActive(conversation.id);
+    const body = {
+      previousConversation: this.props.previousConversation,
+      currentConversation: conversation.id,
+      user: this.props.userId,
+    };
+    console.log(body, "body here!!!!!!!!!!!!!!")
+    await this.props.recentlyRead(body);
   };
 
   render() {
     const { classes } = this.props;
     const otherUser = this.props.conversation.otherUser;
-    const user = this.props.userId;
     return (
       <Box
         onClick={() => this.handleClick(this.props.conversation)}
@@ -54,6 +61,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setIsActive: (id) => {
       dispatch(setIsActive(id));
+    },
+    recentlyRead: (body) => {
+      dispatch(recentlyRead(body));
     }
   };
 };
