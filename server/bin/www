@@ -10,7 +10,7 @@ require("dotenv").config();
 const { app, sessionStore } = require("../app");
 const http = require("http");
 const db = require("../db");
-const onlineUsers = require("../onlineUsers");
+const { onlineUsers, activeConversations } = require("../onlineUsers");
 
 /**
  * Get port from environment and store in Express.
@@ -47,6 +47,12 @@ io.on("connection", (socket) => {
       recipientId: data.recipientId
     });
   });
+
+  socket.on("recently-read", (data) => {
+    dtata.previousConversation && activeConversations.deactivateConversation(data.previousConversation.id);
+    activeConversations.activateConversation(data.currentConversation, data.user);
+    socket.broadcast.emit("active-conversation", data.currentConversation);
+  })
 
   socket.on("logout", (id) => {
     if (onlineUsers.includes(id)) {
