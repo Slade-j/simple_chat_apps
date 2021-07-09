@@ -22,11 +22,14 @@ const styles = {
 };
 
 class Chat extends Component {
+
   handleClick = async (conversation) => {
+    const previousConversation = this.props.previousConversation;
+
     await this.props.setActiveChat(conversation.otherUser.username);
     await this.props.setIsActive(conversation.id);
     const body = {
-      previousConversation: this.props.previousConversation,
+      previousConversation,
       currentConversation: conversation.id,
       user: this.props.userId,
     };
