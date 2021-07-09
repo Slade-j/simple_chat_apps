@@ -36,9 +36,9 @@ class Home extends Component {
     const unreadCounts = storage ?? {};
 
     this.props.fetchConversations()
-      .then(conversations => {
+      .then(res => {
         if (!storage) {
-          conversations.forEach(convo => {
+          res.conversations.forEach(convo => {
           unreadCounts[convo.id] = convo.unread;
           });
           localStorage.setItem("unreadCounts", JSON.stringify(unreadCounts));

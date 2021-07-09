@@ -31,8 +31,10 @@ class Chat extends Component {
     localStorage.setItem("active-convo", JSON.stringify(conversation.id));
 
     const body = {
-      previousConversation,
-      currentConversation: conversation.id,
+      previousConversation: previousConversation ?
+        { otherUser: previousConversation.otherUser.id, id: previousConversation.id } :
+        null,
+      currentConversation: { otherUser: conversation.otherUser.id, id: conversation.id },
       user: this.props.userId,
     };
     console.log(body, "body here!!!!!!!!!!!!!!")

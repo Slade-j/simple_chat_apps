@@ -19,9 +19,13 @@ socket.on("connect", () => {
     store.dispatch(removeOfflineUser(id));
   });
 
-  socket.on("active-conversation", (conversationId) => {
-
+  socket.on("opened-conversation", (conversationId) => {
+    console.log(conversationId, "opened conversation here!!!!!!!!!!!!!!")
   });
+
+  socket.on("closed-conversaton", (conversationId) => {
+    console.log(conversationId, "closed conversation here>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+  })
 
   socket.on("new-message", (data) => {
     store.dispatch(setNewMessage(data.message, data.recipientId, data.sender));

@@ -6,6 +6,7 @@ import {
   setNewMessage,
   setSearchedUsers,
 } from "../conversations";
+import { setReadMap } from "../conversationsRead";
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
@@ -64,6 +65,7 @@ export const logout = (logoutParameters) => async (dispatch) => {
     await axios.post("/auth/logout", logoutParameters);
     localStorage.removeItem("unreadCounts");
     localStorage.removeItem("messenger-token");
+    localStorage.removeItem("active-convo");
     dispatch(gotUser({}));
     socket.emit("logout", id);
   } catch (error) {
@@ -76,7 +78,9 @@ export const logout = (logoutParameters) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
-    dispatch(gotConversations(data));
+    dispatch(gotConversations(data.conversations));
+    console.log(data, "data from conversations here!!!!!!!!!!!!!!!!!!!!")
+    dispatch(setReadMap(data.activeConvoMap));
     return data;
   } catch (error) {
     console.error(error);

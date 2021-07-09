@@ -113,3 +113,29 @@ export const setConvoIsActive = (state, conversationId) => {
     }
   })
 }
+
+// converts values from server to booleans
+export const readMapConverter = (map) => {
+  // check if there is an active conversation
+  const currentChannel = JSON.parse(localStorage.getItem("active-convo"));
+
+  for (const conversationId in map) {
+
+    switch (map[conversationId]) {
+      case 0:
+        map[conversationId] = false;
+        break;
+      case 1:
+        // if the value is one and the ids match the value was due to users active conversation
+        map[conversationId] = map[conversationId] === 1 && conversationId == currentChannel ?
+          false :
+          true;
+        break;
+      case 2:
+        map[conversationId] = true
+        break;
+      default:
+    }
+  }
+  return map
+}

@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { User, Conversation, Message } = require("../../db/models");
 const { Op } = require("sequelize");
-const { onlineUsers } = require("../../onlineUsers");
+const { onlineUsers,  activeConversations } = require("../../onlineUsers");
 
 // get all conversations for a user, include latest message text for preview, and all messages
 // include other user model so we have info on username/profile pic (don't include current user info)
@@ -48,12 +48,18 @@ router.get("/", async (req, res, next) => {
       ],
     });
 
+    // create active conversation map for frontend to track recently read messages
+    const activeConvoMap = {};
+
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
 
       // set currentUserId to filter on frontend
       convoJSON.currentUserId = userId;
+
+      // map activConversation values
+      activeConvoMap[convoJSON.id] = activeConversations.conversationStatus(convoJSON.id)
 
       // set unread count
       if (convoJSON.user1Id === userId) {
@@ -93,7 +99,7 @@ router.get("/", async (req, res, next) => {
       conversations[i] = convoJSON;
     }
 
-    res.json(conversations);
+    res.json({ conversations, activeConvoMap });
   } catch (error) {
     next(error);
   }

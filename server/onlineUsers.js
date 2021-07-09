@@ -14,8 +14,8 @@ class ActiveConversationsMap {
     this[conversationId] = this[conversationId] <= 1 ? 0 : 1
   }
 
-  conversationIsActive (conversationId) {
-    // return this[conversationId].length >= 1;
+  conversationStatus (conversationId) {
+    return this[conversationId] ? this[conversationId] : 0;
   }
 }
 
