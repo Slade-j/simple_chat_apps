@@ -70,12 +70,17 @@ const ActiveChat = (props) => {
 };
 
 const mapStateToProps = (state) => {
+  const lastActiveConvo = JSON.parse(localStorage.getItem("active-convo"))
   return {
     user: state.user,
     conversation:
       state.conversations &&
       state.conversations.find(
-        (conversation) => conversation.otherUser.username === state.activeConversation
+        (conversation) => {
+          return state.activeConversation ?
+            conversation.otherUser.username === state.activeConversation :
+            conversation.id === lastActiveConvo;
+        }
       )
   };
 };

@@ -28,6 +28,8 @@ class Chat extends Component {
 
     await this.props.setActiveChat(conversation.otherUser.username);
     await this.props.setIsActive(conversation.id);
+    localStorage.setItem("active-convo", JSON.stringify(conversation.id));
+
     const body = {
       previousConversation,
       currentConversation: conversation.id,

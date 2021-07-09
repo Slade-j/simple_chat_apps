@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
 
   socket.on("recently-read", (data) => {
     // console.log(data.previousConversation, "previousConversation here!!!!!!!!!!!!!")
-    console.log(data.previousConversation.id, data.currentConversation, "ids here !!!!!!!!!!!!!!!!!!!!!!!!")
+    // console.log(data.previousConversationid.id, data.currentConversation, "ids here !!!!!!!!!!!!!!!!!!!!!!!!")
     if (data.previousConversation && data.previousConversation.id !== data.currentConversation) {
       activeConversations.deactivateConversation(data.previousConversation.id);
     }
