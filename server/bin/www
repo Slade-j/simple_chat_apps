@@ -49,8 +49,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on("recently-read", (data) => {
-    dtata.previousConversation && activeConversations.deactivateConversation(data.previousConversation.id);
+    // console.log(data.previousConversation, "previousConversation here!!!!!!!!!!!!!")
+    console.log(data.previousConversation.id, data.currentConversation, "ids here !!!!!!!!!!!!!!!!!!!!!!!!")
+    if (data.previousConversation && data.previousConversation.id !== data.currentConversation) {
+      activeConversations.deactivateConversation(data.previousConversation.id);
+    }
     activeConversations.activateConversation(data.currentConversation, data.user);
+    console.log(activeConversations, "ACTIVE CLASSSSSSSSSSSSSSSSSSSS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     socket.broadcast.emit("active-conversation", data.currentConversation);
   })
 

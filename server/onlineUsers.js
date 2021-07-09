@@ -2,16 +2,20 @@ const onlineUsers = [];
 
 class ActiveConversationsMap {
 
-  activateConversation (id, conversationId) {
-    this[conversationId] = this[conversationId] ? this[conversationId].push(id) : [id];
+  activateConversation (conversationId) {
+    if (!this[conversationId] || this[conversationId] == 0) {
+      this[conversationId] = 1;
+    } else if (this[conversationId] >= 1) {
+      this[conversationId] = 2;
+    }
   }
 
   deactivateConversation (conversationId) {
-    this[conversationId].pop();
+    this[conversationId] = this[conversationId] <= 1 ? 0 : 1
   }
 
   conversationIsActive (conversationId) {
-    return this[conversationId].length >= 1;
+    // return this[conversationId].length >= 1;
   }
 }
 
