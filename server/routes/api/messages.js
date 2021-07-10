@@ -9,7 +9,7 @@ router.post("/", async (req, res, next) => {
       return res.sendStatus(401);
     }
     const senderId = req.user.id;
-    const { recipientId, text, conversationId, sender } = req.body;
+    const { recipientId, text, conversationId, sender, isOnline } = req.body;
     let conversation = {};
 
     // if we have conversationId use it to find conversation
@@ -33,6 +33,12 @@ router.post("/", async (req, res, next) => {
       if (onlineUsers.includes(sender.id)) {
         sender.online = true;
       }
+    }
+
+    // if recipiant is offline update unread message count
+    if (!isOnline) {
+      conversation.unread2++
+      await conversation.save();
     }
 
     // make sure sender is part of conversation before creating message
