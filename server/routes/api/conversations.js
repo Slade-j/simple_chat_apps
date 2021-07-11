@@ -105,4 +105,22 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// update unread messages on conversation.
+router.patch("/", async (req, res, next) => {
+  const { conversationId, lastReadMessageId, userId } = req.body;
+  try {
+    const conversation = await Conversation.findByPk(conversationId)
+
+    if (conversation.user1Id === userId) {
+      conversation.unread1 = lastReadMessageId;
+    } else if (conversation.user2Id === userId) {
+      conversation.unread2 = lastReadMessageId;
+    }
+
+    conversation.save();
+  } catch (error) {
+    next(error);
+  }
+})
+
 module.exports = router;
