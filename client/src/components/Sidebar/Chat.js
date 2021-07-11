@@ -23,6 +23,15 @@ const styles = {
 
 class Chat extends Component {
 
+  getLastMessage = (messages) => {
+    for (let i = messages.length - 1; i >= 0 ; i--) {
+      const latestMessage = messages[i]
+      if (latestMessage.senderId !== this.props.userId) {
+        return latestMessage.id;
+      }
+    }
+  }
+
   handleClick = async (conversation) => {
     const previousConversation = this.props.previousConversation;
 
@@ -36,6 +45,7 @@ class Chat extends Component {
         null,
       currentConversation: { otherUser: conversation.otherUser.id, id: conversation.id },
       user: this.props.userId,
+      lastRead: previousConversation ? this.getLastMessage(previousConversation.messages) : null,
     };
     console.log(body, "body here!!!!!!!!!!!!!!")
     await this.props.recentlyRead(body);

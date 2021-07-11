@@ -120,14 +120,13 @@ export const readMapConverter = (map) => {
   const currentChannel = JSON.parse(localStorage.getItem("active-convo"));
 
   for (const conversationId in map) {
-
     switch (map[conversationId]) {
       case 0:
         map[conversationId] = false;
         break;
       case 1:
         // if the value is one and the ids match the value was due to users active conversation
-        map[conversationId] = map[conversationId] === 1 && conversationId == currentChannel ?
+        map[conversationId] = map[conversationId] === 1 && conversationId === currentChannel ?
           false :
           true;
         break;

@@ -118,7 +118,17 @@ export const postMessage = (body) => async (dispatch) => {
   }
 };
 
+const saveUnread =  async (conversationId, lastReadMessageId, userId) => {
+  await axios.patch("api/conversations", { conversationId, lastReadMessageId, userId });
+}
+
 export const recentlyRead = (body) => async (dispatch) => {
+  const { previousConversation, currentConversation, lastRead, user } = body;
+
+  if (previousConversation && previousConversation.id !== currentConversation.id) {
+    saveUnread(previousConversation.id, lastRead, user.id);
+  }
+
   socket.emit("recently-read", body);
 }
 
