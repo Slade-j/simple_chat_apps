@@ -24,7 +24,7 @@ socket.on("connect", () => {
     store.dispatch(openConversation(conversationId));
   });
 
-  socket.on("closed-conversaton", (conversationId) => {
+  socket.on("closed-conversation", (conversationId) => {
     store.dispatch(closeConversation(conversationId));
   })
 

@@ -59,7 +59,8 @@ export const login = (credentials) => async (dispatch) => {
 
 export const logout = (logoutParameters) => async (dispatch) => {
   const { id } = logoutParameters;
-
+  const conversationId = JSON.parse(localStorage.getItem("active-convo"));
+  console.log(conversationId, "conversation id in logout !!!!!")
   try {
     // logout posts unreadCounts so a single call to backend can handle updating unread columns in conversations
     await axios.post("/auth/logout", logoutParameters);
@@ -67,7 +68,8 @@ export const logout = (logoutParameters) => async (dispatch) => {
     localStorage.removeItem("messenger-token");
     localStorage.removeItem("active-convo");
     dispatch(gotUser({}));
-    socket.emit("logout", id);
+    const data = { id, conversationId: conversationId ? conversationId : null}
+    socket.emit("logout", data);
   } catch (error) {
     console.error(error);
   }
@@ -121,18 +123,20 @@ export const postMessage = (body) => async (dispatch) => {
   }
 };
 
-const saveUnread =  async (conversationId, lastReadMessageId, userId) => {
+const saveLastRead =  async (conversationId, lastReadMessageId, userId) => {
+  console.log("in save unread")
   await axios.patch("api/conversations", { conversationId, lastReadMessageId, userId });
 }
 
 export const recentlyRead = (body) => async (dispatch) => {
   const { previousConversation, currentConversation, lastRead, user } = body;
+  console.log("here abefore save unread", user)
 
   if (previousConversation && previousConversation.id !== currentConversation.id) {
-    saveUnread(previousConversation.id, lastRead, user.id);
+    saveLastRead(previousConversation.id, lastRead, user);
   }
 
-  socket.emit("recently-read", body);
+  socket.emit("live-conversation", body);
 }
 
 export const searchUsers = (searchTerm) => async (dispatch) => {

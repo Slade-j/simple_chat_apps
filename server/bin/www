@@ -52,13 +52,13 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("recently-read", (data) => {
+  socket.on("live-conversation", (data) => {
     const { previousConversation, currentConversation, user } = data;
     // console.log(data.previousConversation, "previousConversation here!!!!!!!!!!!!!")
     // console.log(data.previousConversationid.id, data.currentConversation, "ids here !!!!!!!!!!!!!!!!!!!!!!!!")
     if (previousConversation && previousConversation.id !== currentConversation.id) {
       activeConversations.deactivateConversation(previousConversation.id);
-      socket.broadcast.emit("closed-conversaton", previousConversation.id)
+      socket.broadcast.emit("closed-conversation", previousConversation.id)
     }
     // in the case of a new message there is no conversation Id and the next two actions will be handled elsewere.
     if (currentConversation.id) {
@@ -68,11 +68,16 @@ io.on("connection", (socket) => {
     }
   })
 
-  socket.on("logout", (id) => {
+  socket.on("logout", (data) => {
+    const { conversationId, id } = data;
     if (onlineUsers.includes(id)) {
       userIndex = onlineUsers.indexOf(id);
       onlineUsers.splice(userIndex, 1);
       socket.broadcast.emit("remove-offline-user", id);
+    }
+    if (conversationId) {
+      activeConversations.deactivateConversation(conversationId);
+      socket.broadcast.emit("closed-conversation", conversationId)
     }
   });
 });
