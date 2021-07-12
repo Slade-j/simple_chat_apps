@@ -19,7 +19,7 @@ router.get("/", async (req, res, next) => {
           user2Id: userId,
         },
       },
-      attributes: ["id", "unread1", "unread2", "user1Id", "user2Id"],
+      attributes: ["id", "unread1", "unread2", "user1Id", "user2Id", "lastRead1", "lastRead2"],
       order: [["createdAt", "DESC"], [Message, "createdAt", "ASC"]],
       include: [
         { model: Message },
@@ -62,12 +62,19 @@ router.get("/", async (req, res, next) => {
       activeConvoMap[convoJSON.id] = activeConversations.conversationStatus(convoJSON.id)
 
       // set unread count
+      // set "lastRead" property to be the last read message of other user.
       if (convoJSON.user1Id === userId) {
         convoJSON.unread = convoJSON.unread1;
+        convoJSON.lastRead = convoJSON.lastRead2
       } else if (convo.user2Id === userId) {
         convoJSON.unread = convoJSON.unread2
+        convoJSON.lastRead = convoJSON.lastRead1
       }
 
+      delete convoJSON.unread1;
+      delete convoJSON.unread2;
+      delete convoJSON.lastRead1;
+      delete convoJSON.lastRead2;
       delete convoJSON.user1Id;
       delete convoJSON.user2Id;
 
@@ -79,9 +86,6 @@ router.get("/", async (req, res, next) => {
         convoJSON.otherUser = convoJSON.user2;
         delete convoJSON.user2;
       }
-
-      // set lastRead messages of conversation
-      convoJSON.lastRead = [convoJSON.lastRead1, convoJSON.lastRead2]
 
       // set property for online status of the other user
       if (onlineUsers.includes(convoJSON.otherUser.id)) {
@@ -120,7 +124,7 @@ router.patch("/", async (req, res, next) => {
       conversation.lastRead2 = lastReadMessageId;
     }
 
-    return await conversation.save();
+    await conversation.save();
   } catch (error) {
     next(error);
   }

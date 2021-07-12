@@ -55,10 +55,11 @@ const ActiveChat = (props) => {
           />
           <Box className={classes.chatContainer}>
             <Messages
-              readStatus={conversationsRead[conversation.id]}
+              isLive={conversationsRead[conversation.id]}
               messages={conversation.messages}
               otherUser={conversation.otherUser}
               userId={user.id}
+              lastRead={conversation.lastRead}
             />
             <Input
               conversation={conversation}
