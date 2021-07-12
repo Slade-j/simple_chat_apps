@@ -46,9 +46,19 @@ class Home extends Component {
       });
   }
 
+  getLastRead = (conversationId) => {
+    let lastRead;
+    this.props.conversations.forEach(convo => {
+      if (convo.id === conversationId) lastRead = convo.lastRead;
+    })
+    return lastRead
+  }
+
   handleLogout = async () => {
     const unreadCounts = JSON.parse(localStorage.getItem("unreadCounts"));
-    const logoutParameters = { id: this.props.user.id, unreadCounts }
+    const conversationId = JSON.parse(localStorage.getItem("active-convo"));
+    const lastRead = conversationId && this.getLastRead(conversationId)
+    const logoutParameters = { id: this.props.user.id, unreadCounts, lastRead, conversationId }
     await this.props.logout(logoutParameters);
   };
 

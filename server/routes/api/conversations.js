@@ -122,6 +122,7 @@ router.patch("/", async (req, res, next) => {
     }
 
     await conversation.save();
+    res.sendStatus(200);
   } catch (error) {
     next(error);
   }

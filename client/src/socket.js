@@ -30,7 +30,9 @@ socket.on("connect", () => {
   })
 
   socket.on("last-read", (data) => {
+    if (data.lastRead) {
     store.dispatch(setLastRead(data.lastRead, data.conversationId));
+    }
   })
 
   socket.on("new-message", (data) => {

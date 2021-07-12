@@ -1,3 +1,4 @@
+import { AccordionSummary } from "@material-ui/core";
 import axios from "axios";
 import socket from "../../socket";
 import {
@@ -57,9 +58,13 @@ export const login = (credentials) => async (dispatch) => {
   }
 };
 
+const saveLastRead =  async (conversationId, lastReadMessageId, userId) => {
+  await axios.patch("api/conversations", { conversationId, lastReadMessageId, userId });
+}
+
 export const logout = (logoutParameters) => async (dispatch) => {
-  const { id } = logoutParameters;
-  const conversationId = JSON.parse(localStorage.getItem("active-convo"));
+  const { conversationId, id, lastRead } = logoutParameters;
+
   try {
     // logout posts unreadCounts so a single call to backend can handle updating unread columns in conversations
     await axios.post("/auth/logout", logoutParameters);
@@ -67,8 +72,8 @@ export const logout = (logoutParameters) => async (dispatch) => {
     localStorage.removeItem("messenger-token");
     localStorage.removeItem("active-convo");
     dispatch(gotUser({}));
-    const data = { id, conversationId: conversationId ? conversationId : null}
-    socket.emit("logout", data);
+    socket.emit("logout", {id, conversationId, lastRead });
+    await saveLastRead(conversationId, lastRead, id)
   } catch (error) {
     console.error(error);
   }
@@ -120,10 +125,6 @@ export const postMessage = (body) => async (dispatch) => {
     console.error(error);
   }
 };
-
-const saveLastRead =  async (conversationId, lastReadMessageId, userId) => {
-  await axios.patch("api/conversations", { conversationId, lastReadMessageId, userId });
-}
 
 export const recentlyRead = (body) => async (dispatch) => {
   const { previousConversation, currentConversation, lastRead, user } = body;

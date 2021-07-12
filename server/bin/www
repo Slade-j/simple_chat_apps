@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("logout", (data) => {
-    const { conversationId, id } = data;
+    const { conversationId, id, lastRead } = data;
     if (onlineUsers.includes(id)) {
       userIndex = onlineUsers.indexOf(id);
       onlineUsers.splice(userIndex, 1);
@@ -74,6 +74,7 @@ io.on("connection", (socket) => {
     }
     if (conversationId) {
       activeConversations.deactivateConversation(conversationId);
+      socket.broadcast.emit("last-read", { lastRead, conversationId })
       socket.broadcast.emit("closed-conversation", conversationId)
     }
   });
