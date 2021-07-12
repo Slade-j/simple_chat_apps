@@ -47,7 +47,6 @@ class Chat extends Component {
       user: this.props.userId,
       lastRead: previousConversation ? this.getLastMessage(previousConversation.messages) : null,
     };
-    console.log(body, "body here!!!!!!!!!!!!!!")
     await this.props.recentlyRead(body);
   };
 

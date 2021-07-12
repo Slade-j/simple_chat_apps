@@ -140,3 +140,16 @@ export const readMapConverter = (map) => {
   }
   return map
 }
+
+export const setLastReadMessage = (state, payload) => {
+  const { messageId, conversationId } = payload;
+
+  return state.map(convo => {
+    if (convo.id === conversationId) {
+      convo.lastRead = messageId
+      return convo
+    } else {
+      return convo
+    }
+  })
+}

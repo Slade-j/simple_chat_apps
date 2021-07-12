@@ -4,6 +4,7 @@ import {
   setNewMessage,
   removeOfflineUser,
   addOnlineUser,
+  setLastRead,
 } from "./store/conversations";
 import { openConversation, closeConversation } from "./store/conversationsRead";
 
@@ -26,6 +27,10 @@ socket.on("connect", () => {
 
   socket.on("closed-conversation", (conversationId) => {
     store.dispatch(closeConversation(conversationId));
+  })
+
+  socket.on("last-read", (data) => {
+    store.dispatch(setLastRead(data.lastRead, data.conversationId));
   })
 
   socket.on("new-message", (data) => {

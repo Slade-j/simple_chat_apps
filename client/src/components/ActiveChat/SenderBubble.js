@@ -41,10 +41,6 @@ const SenderBubble = (props) => {
   const classes = useStyles();
   const { time, text, otherUser, isRead } = props;
 
-  useEffect(() => {
-    console.log(isRead, "IS ERADFj")
-  }, [isRead])
-
   return (
     <Box className={classes.root}>
       <Typography className={classes.date}>{time}</Typography>

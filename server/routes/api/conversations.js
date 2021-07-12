@@ -112,15 +112,12 @@ router.get("/", async (req, res, next) => {
 // update unread messages on conversation.
 router.patch("/", async (req, res, next) => {
   const { conversationId, lastReadMessageId, userId } = req.body;
-  console.log("HITHTIHTIHTIHTI", conversationId, lastReadMessageId, userId)
   try {
     const conversation = await Conversation.findByPk(conversationId)
 
     if (conversation.user1Id === userId) {
-      console.log("IN user1 >>>>>>>>>>>>>>>>>>")
       conversation.lastRead1 = lastReadMessageId;
     } else if (conversation.user2Id === userId) {
-      console.log("in user 2 >>>>>>>>>>>>>>>>>>>>>>>>>>>>")
       conversation.lastRead2 = lastReadMessageId;
     }
 

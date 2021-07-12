@@ -12,10 +12,6 @@ const Messages = (props) => {
   }, [lastRead])
 
   useEffect(() => {
-    console.log(recentlyRead, "RECENT HJERER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-  }, [recentlyRead])
-
-  useEffect(() => {
     if(!messages.length) return;
 
     // check to see if ohter user has conversation active
