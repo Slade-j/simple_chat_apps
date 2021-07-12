@@ -31,11 +31,35 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchConversations();
+    // check localstorage so counts will persist upon refresh
+    const storage = localStorage.getItem("unreadCounts");
+    const unreadCounts = storage ?? {};
+
+    this.props.fetchConversations()
+      .then(res => {
+        if (!storage) {
+          res.conversations.forEach(convo => {
+          unreadCounts[convo.id] = convo.unread;
+          });
+          localStorage.setItem("unreadCounts", JSON.stringify(unreadCounts));
+        }
+      });
+  }
+
+  getLastRead = (conversationId) => {
+    let lastRead;
+    this.props.conversations.forEach(convo => {
+      if (convo.id === conversationId) lastRead = convo.lastRead;
+    })
+    return lastRead
   }
 
   handleLogout = async () => {
-    await this.props.logout(this.props.user.id);
+    const unreadCounts = JSON.parse(localStorage.getItem("unreadCounts"));
+    const conversationId = JSON.parse(localStorage.getItem("active-convo"));
+    const lastRead = conversationId && this.getLastRead(conversationId)
+    const logoutParameters = { id: this.props.user.id, unreadCounts, lastRead, conversationId }
+    await this.props.logout(logoutParameters);
   };
 
   render() {
@@ -70,12 +94,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    logout: (id) => {
-      dispatch(logout(id));
+    logout: (params) => {
+      dispatch(logout(params));
       dispatch(clearOnLogout());
     },
     fetchConversations: () => {
-      dispatch(fetchConversations());
+      return dispatch(fetchConversations());
     },
   };
 };

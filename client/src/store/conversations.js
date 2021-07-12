@@ -4,6 +4,8 @@ import {
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
   addMessageToStore,
+  setConvoIsActive,
+  setLastReadMessage,
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -15,6 +17,8 @@ const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
+const SET_ISACTIVE = "SET_ISACTIVE";
+const SET_LAST_READ = "SET_LAST_READ";
 
 // ACTION CREATORS
 
@@ -59,6 +63,11 @@ export const clearSearchedUsers = () => {
   };
 };
 
+export const setIsActive = (id) => ({
+  type: SET_ISACTIVE,
+  payload: id
+})
+
 // add new conversation when sending a new message
 export const addConversation = (recipientId, newMessage) => {
   return {
@@ -66,6 +75,11 @@ export const addConversation = (recipientId, newMessage) => {
     payload: { recipientId, newMessage },
   };
 };
+
+export const setLastRead = (messageId, conversationId) => ({
+  type: SET_LAST_READ,
+  payload: { messageId, conversationId }
+})
 
 // REDUCER
 
@@ -91,6 +105,10 @@ const reducer = (state = [], action) => {
         action.payload.recipientId,
         action.payload.newMessage
       );
+    case SET_ISACTIVE:
+      return setConvoIsActive(state, action.payload)
+    case SET_LAST_READ:
+        return setLastReadMessage(state, action.payload)
     default:
       return state;
   }

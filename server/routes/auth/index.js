@@ -1,6 +1,7 @@
 const router = require("express").Router();
-const { User } = require("../../db/models");
+const { User, Conversation } = require("../../db/models");
 const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -74,7 +75,35 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.delete("/logout", (req, res, next) => {
+router.post("/logout", async (req, res, next) => {
+  // Set unread values of conversations for next session
+  const { id, unreadCounts } = req.body;
+
+  const conversations = await Conversation.findAll({
+    where: {
+      [Op.or]: {
+        user1Id: id,
+        user2Id: id,
+      },
+    },
+  });
+
+  try {
+
+    await Promise.all(conversations.map(async (convo) => {
+      if (unreadCounts[convo.id] >= 0) {
+        if (convo.user1Id === id) convo.unread1 = unreadCounts[convo.id];
+        if (convo.user2Id === id) convo.unread2 = unreadCounts[convo.id];
+        return await convo.save();
+      } else {
+        return await convo.save();
+      }
+
+    }));
+  } catch (error) {
+    next(error);
+  }
+
   res.sendStatus(204);
 });
 

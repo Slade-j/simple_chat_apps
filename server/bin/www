@@ -10,7 +10,7 @@ require("dotenv").config();
 const { app, sessionStore } = require("../app");
 const http = require("http");
 const db = require("../db");
-const onlineUsers = require("../onlineUsers");
+const { onlineUsers, activeConversations } = require("../onlineUsers");
 
 /**
  * Get port from environment and store in Express.
@@ -46,13 +46,36 @@ io.on("connection", (socket) => {
       sender: data.sender,
       recipientId: data.recipientId
     });
+    if (data.isNewConversation) {
+      socket.broadcast.emit("opened-conversation", data.conversationId);
+    }
   });
 
-  socket.on("logout", (id) => {
+  socket.on("live-conversation", (data) => {
+    const { previousConversation, currentConversation, user, lastRead } = data;
+    if (previousConversation && previousConversation.id !== currentConversation.id) {
+      activeConversations.deactivateConversation(previousConversation.id);
+      socket.broadcast.emit("closed-conversation", previousConversation.id)
+      socket.broadcast.emit("last-read", { lastRead, conversationId: previousConversation.id });
+    }
+    // in the case of a new message there is no conversation Id and the next two actions will be handled elsewere.
+    if (currentConversation.id) {
+      activeConversations.activateConversation(currentConversation.id, user);
+      socket.broadcast.emit("opened-conversation", currentConversation.id);
+    }
+  })
+
+  socket.on("logout", (data) => {
+    const { conversationId, id, lastRead } = data;
     if (onlineUsers.includes(id)) {
       userIndex = onlineUsers.indexOf(id);
       onlineUsers.splice(userIndex, 1);
       socket.broadcast.emit("remove-offline-user", id);
+    }
+    if (conversationId) {
+      activeConversations.deactivateConversation(conversationId);
+      socket.broadcast.emit("last-read", { lastRead, conversationId })
+      socket.broadcast.emit("closed-conversation", conversationId)
     }
   });
 });
