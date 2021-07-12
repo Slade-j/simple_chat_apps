@@ -37,13 +37,13 @@ class Chat extends Component {
 
     await this.props.setActiveChat(conversation.otherUser.username);
     await this.props.setIsActive(conversation.id);
-    localStorage.setItem("active-convo", JSON.stringify(conversation.id));
+    conversation.id && localStorage.setItem("active-convo", JSON.stringify(conversation.id));
 
     const body = {
       previousConversation: previousConversation ?
         { otherUser: previousConversation.otherUser.id, id: previousConversation.id } :
         null,
-      currentConversation: { otherUser: conversation.otherUser.id, id: conversation.id },
+      currentConversation: { otherUser: conversation.otherUser.id, id: conversation.id ? conversation.id : null },
       user: this.props.userId,
       lastRead: previousConversation ? this.getLastMessage(previousConversation.messages) : null,
     };

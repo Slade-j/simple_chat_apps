@@ -97,6 +97,8 @@ const sendMessage = (data, body) => {
     message: data.message,
     recipientId: body.recipientId,
     sender: data.sender,
+    isNewConversation: data.isNewConversation,
+    conversationId: data.conversationId
   });
 };
 
@@ -108,6 +110,7 @@ export const postMessage = (body) => async (dispatch) => {
 
     if (!body.conversationId) {
       dispatch(addConversation(body.recipientId, data.message));
+      localStorage.setItem("active-convo", data.conversationId);
     } else {
       dispatch(setNewMessage(data.message));
     }

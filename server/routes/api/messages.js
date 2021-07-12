@@ -1,9 +1,10 @@
 const router = require("express").Router();
 const { Conversation, Message } = require("../../db/models");
-const { onlineUsers } = require("../../onlineUsers");
+const { onlineUsers, activeConversations } = require("../../onlineUsers");
 
 // expects {recipientId, text, conversationId } in body (conversationId will be null if no conversation exists yet)
 router.post("/", async (req, res, next) => {
+  let isNewConversation = false;
   try {
     if (!req.user) {
       return res.sendStatus(401);
@@ -22,6 +23,12 @@ router.post("/", async (req, res, next) => {
         senderId,
         recipientId
       );
+      // if there were no conversationId, the activeConversation value was not set and needs to be now
+      if (conversation) {
+        activeConversations.activateConversation(conversation.id);
+        // set isNewConversation so recipient client can open conversation
+        isNewConversation = true;
+      }
     }
 
     if (!conversation) {
@@ -33,6 +40,10 @@ router.post("/", async (req, res, next) => {
       if (onlineUsers.includes(sender.id)) {
         sender.online = true;
       }
+      // if a conversation needs to be created, the activeConversation value needs to be updated
+      activeConversations.activateConversation(conversation.id);
+      // set isNewConversation so recipient client can open conversation
+      isNewConversation = true;
     }
 
     // if recipiant is offline update unread message count
@@ -48,7 +59,7 @@ router.post("/", async (req, res, next) => {
         text,
         conversationId: conversation.id,
       });
-      res.json({ message, sender });
+      res.json({ message, sender, isNewConversation, conversationId: conversation.id });
     } else {
       res.sendStatus(403);
     }

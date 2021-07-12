@@ -72,7 +72,9 @@ const ActiveChat = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const lastActiveConvo = JSON.parse(localStorage.getItem("active-convo")) || {}
+  const lastActiveConvo = localStorage.getItem("active-convo") ?
+    JSON.parse(localStorage.getItem("active-convo")) :
+      null;
   return {
     conversationsRead: state.conversationsRead,
     user: state.user,

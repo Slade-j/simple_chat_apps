@@ -41,11 +41,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new-message", (data) => {
+    console.log(data, "new message data here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     socket.broadcast.emit("new-message", {
       message: data.message,
       sender: data.sender,
       recipientId: data.recipientId
     });
+    if (data.isNewConversation) {
+      socket.broadcast.emit("opened-conversation", data.conversationId);
+    }
   });
 
   socket.on("recently-read", (data) => {
@@ -56,9 +60,12 @@ io.on("connection", (socket) => {
       activeConversations.deactivateConversation(previousConversation.id);
       socket.broadcast.emit("closed-conversaton", previousConversation.id)
     }
-    activeConversations.activateConversation(currentConversation.id, user);
-    console.log(activeConversations, "ACTIVE CLASSSSSSSSSSSSSSSSSSSS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-    socket.broadcast.emit("opened-conversation", currentConversation.id);
+    // in the case of a new message there is no conversation Id and the next two actions will be handled elsewere.
+    if (currentConversation.id) {
+      activeConversations.activateConversation(currentConversation.id, user);
+      console.log(activeConversations, "ACTIVE CLASSSSSSSSSSSSSSSSSSSS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      socket.broadcast.emit("opened-conversation", currentConversation.id);
+    }
   })
 
   socket.on("logout", (id) => {
