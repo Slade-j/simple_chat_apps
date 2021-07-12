@@ -20,7 +20,16 @@ const Conversation = db.define("conversation", {
     type: Sequelize.INTEGER,
     allowNull: false,
     defaultValue: 0
-  }
+  },
+  lastRead1: {
+    type: Sequelize.INTEGER,
+    allowNull: true,
+  },
+  lastRead2: {
+    type: Sequelize.INTEGER,
+    allowNull: true,
+  },
+
 });
 
 // find conversation given two user Ids

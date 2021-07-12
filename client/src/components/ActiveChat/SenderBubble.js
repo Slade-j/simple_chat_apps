@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Avatar } from "@material-ui/core";
 
@@ -39,14 +39,15 @@ const useStyles = makeStyles(() => ({
 
 const SenderBubble = (props) => {
   const classes = useStyles();
-  const { time, text, otherUser, recentlyRead } = props;
+  const { time, text, otherUser, isRead } = props;
+
   return (
     <Box className={classes.root}>
       <Typography className={classes.date}>{time}</Typography>
       <Box className={classes.bubble}>
         <Typography className={classes.text}>{text}</Typography>
       </Box>
-      {recentlyRead &&
+      {isRead &&
         <Box className={classes.avatarFlexer} >
           <Avatar className={classes.otherAvatar} alt={otherUser.username} src={otherUser.photoUrl} />
         </Box>}
